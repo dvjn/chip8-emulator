@@ -1,0 +1,14 @@
+{
+  "name": "chip8-emulator",
+  "version": "1.0.0",
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^2.6.14",
+    "vite-plugin-wasm-pack": "^0.1.9"
+  },
+  "scripts": {
+    "wasm": "wasm-pack build ./chip8-emulator-wasm --target web",
+    "dev": "vite",
+    "build": "vite build"
+  }
+}

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chip-8 Emulator</title>
+    <script type="module" src="/src/index.ts"></script>
+    <link rel="stylesheet" href="/src/index.css" />
+  </head>
+
+  <body>
+    <main>
+      <h1>CHIP-8</h1>
+      <canvas id="display"></canvas>
+      <div id="controls">
+        <select id="rom-select" disabled default="">
+          <option value="">Select ROM</option>
+          <option value="BRIX">BRIX</option>
+          <option value="INVADERS">INVADERS</option>
+          <option value="PONG">PONG</option>
+          <option value="TETRIS">TETRIS</option>
+        </select>
+        <button id="load-rom-btn" disabled>Load ROM</button>
+      </div>
+    </main>
+  </body>
+</html>
