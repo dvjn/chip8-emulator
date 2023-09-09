@@ -9,7 +9,7 @@ written in rust, webassembly, and typescript.
 
 ![brix](./screenshots/brix.png)
 
-**Controls:**
+#### Controls
 
 - q = left
 - e = right
@@ -18,7 +18,7 @@ written in rust, webassembly, and typescript.
 
 ![invaders](./screenshots/invaders.png)
 
-**Controls:**
+#### Controls
 
 - q = left
 - w = shoot
@@ -28,7 +28,7 @@ written in rust, webassembly, and typescript.
 
 ![pong](./screenshots/pong.png)
 
-**Controls:**
+#### Controls
 
 - 1 = left paddle up
 - q = left paddle down
@@ -39,7 +39,7 @@ written in rust, webassembly, and typescript.
 
 ![tetris](./screenshots/tetris.png)
 
-**Controls:**
+#### Controls
 
 - q = rotate
 - w = left
