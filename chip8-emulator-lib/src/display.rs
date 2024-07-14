@@ -97,16 +97,16 @@ mod tests {
         assert!(display.buffer[2]);
         assert!(display.buffer[3]);
 
-        assert!(display.buffer[0 + Display::WIDTH]);
+        assert!(display.buffer[Display::WIDTH]);
         assert!(display.buffer[3 + Display::WIDTH]);
 
-        assert!(display.buffer[0 + Display::WIDTH * 2]);
+        assert!(display.buffer[Display::WIDTH * 2]);
         assert!(display.buffer[3 + Display::WIDTH * 2]);
 
-        assert!(display.buffer[0 + Display::WIDTH * 3]);
+        assert!(display.buffer[Display::WIDTH * 3]);
         assert!(display.buffer[3 + Display::WIDTH * 3]);
 
-        assert!(display.buffer[0 + Display::WIDTH * 4]);
+        assert!(display.buffer[Display::WIDTH * 4]);
         assert!(display.buffer[1 + Display::WIDTH * 4]);
         assert!(display.buffer[2 + Display::WIDTH * 4]);
         assert!(display.buffer[3 + Display::WIDTH * 4]);
@@ -122,7 +122,7 @@ mod tests {
 
         assert!(display.buffer[Display::WIDTH - 2 + Display::WIDTH * (Display::HEIGHT - 2)]);
         assert!(display.buffer[Display::WIDTH - 1 + Display::WIDTH * (Display::HEIGHT - 2)]);
-        assert!(display.buffer[0 + Display::WIDTH * (Display::HEIGHT - 2)]);
+        assert!(display.buffer[Display::WIDTH * (Display::HEIGHT - 2)]);
         assert!(display.buffer[1 + Display::WIDTH * (Display::HEIGHT - 2)]);
 
         assert!(display.buffer[Display::WIDTH - 2 + Display::WIDTH * (Display::HEIGHT - 1)]);
@@ -131,12 +131,12 @@ mod tests {
         assert!(display.buffer[Display::WIDTH - 2]);
         assert!(display.buffer[1]);
 
-        assert!(display.buffer[Display::WIDTH - 2 + Display::WIDTH * 1]);
-        assert!(display.buffer[1 + Display::WIDTH * 1]);
+        assert!(display.buffer[Display::WIDTH - 2 + Display::WIDTH]);
+        assert!(display.buffer[1 + Display::WIDTH]);
 
         assert!(display.buffer[Display::WIDTH - 2 + Display::WIDTH * 2]);
         assert!(display.buffer[Display::WIDTH - 1 + Display::WIDTH * 2]);
-        assert!(display.buffer[0 + Display::WIDTH * 2]);
+        assert!(display.buffer[Display::WIDTH * 2]);
         assert!(display.buffer[1 + Display::WIDTH * 2]);
     }
 }

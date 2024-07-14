@@ -55,7 +55,7 @@ impl Cpu {
     }
 
     pub fn load_rom(&mut self, rom: &[u8]) {
-        self.memory[0x200..0x200 + rom.len()].copy_from_slice(&rom);
+        self.memory[0x200..0x200 + rom.len()].copy_from_slice(rom);
     }
 
     pub fn decrement_timers(&mut self) {
@@ -100,7 +100,6 @@ impl Cpu {
             }
             Instruction(0x0, _, _, _) => {
                 // 0nnn - SYS addr
-                ()
             }
             Instruction(0x1, _, _, _) => {
                 // 1nnn - JP addr
@@ -897,16 +896,16 @@ mod tests {
         assert!(display_buffer[2]);
         assert!(display_buffer[3]);
 
-        assert!(display_buffer[0 + Display::WIDTH]);
+        assert!(display_buffer[Display::WIDTH]);
         assert!(display_buffer[3 + Display::WIDTH]);
 
-        assert!(display_buffer[0 + Display::WIDTH * 2]);
+        assert!(display_buffer[Display::WIDTH * 2]);
         assert!(display_buffer[3 + Display::WIDTH * 2]);
 
-        assert!(display_buffer[0 + Display::WIDTH * 3]);
+        assert!(display_buffer[Display::WIDTH * 3]);
         assert!(display_buffer[3 + Display::WIDTH * 3]);
 
-        assert!(display_buffer[0 + Display::WIDTH * 4]);
+        assert!(display_buffer[Display::WIDTH * 4]);
         assert!(display_buffer[1 + Display::WIDTH * 4]);
         assert!(display_buffer[2 + Display::WIDTH * 4]);
         assert!(display_buffer[3 + Display::WIDTH * 4]);
