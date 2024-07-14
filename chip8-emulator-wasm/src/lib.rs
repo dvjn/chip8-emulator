@@ -1,8 +1,9 @@
+#![allow(clippy::new_without_default)]
+
 mod utils;
 
 use chip8_emulator_lib::cpu::Cpu;
 use js_sys::Array;
-use std::sync::Mutex;
 use utils::set_panic_hook;
 use wasm_bindgen::prelude::*;
 
@@ -11,54 +12,55 @@ pub fn main() {
     set_panic_hook();
 }
 
-static CPU: Mutex<Cpu> = Mutex::new(Cpu::new());
-
 #[wasm_bindgen]
-pub fn load_rom(rom: &[u8]) {
-    CPU.lock().unwrap().load_rom(rom);
+pub struct Emulator {
+    cpu: Cpu,
 }
 
 #[wasm_bindgen]
-pub fn reset() {
-    CPU.lock().unwrap().reset();
-}
+impl Emulator {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> Self {
+        Emulator { cpu: Cpu::new() }
+    }
 
-#[wasm_bindgen]
-pub fn execute_instruction_cycle() {
-    CPU.lock().unwrap().execute_instruction_cycle();
-}
+    pub fn load_rom(&mut self, rom: &[u8]) {
+        self.cpu.load_rom(rom);
+    }
 
-#[wasm_bindgen]
-pub fn decrement_timers() {
-    CPU.lock().unwrap().decrement_timers();
-}
+    pub fn reset(&mut self) {
+        self.cpu.reset();
+    }
 
-#[wasm_bindgen]
-pub fn get_display_buffer() -> Array {
-    let cpu = CPU.lock().unwrap();
-    let display_buffer = cpu.display.get_buffer();
-    let js_buffer = Array::new_with_length(display_buffer.len() as u32);
+    pub fn execute_instruction_cycle(&mut self) {
+        self.cpu.execute_instruction_cycle();
+    }
 
-    display_buffer
-        .iter()
-        .enumerate()
-        .for_each(|(i, value)| js_buffer.set(i as u32, JsValue::from_bool(*value)));
+    pub fn decrement_timers(&mut self) {
+        self.cpu.decrement_timers();
+    }
 
-    js_buffer
-}
+    pub fn get_display_buffer(&mut self) -> Array {
+        let display_buffer = self.cpu.display.get_buffer();
+        let js_buffer = Array::new_with_length(display_buffer.len() as u32);
 
-#[wasm_bindgen]
-pub fn is_sound_playing() -> JsValue {
-    let cpu = CPU.lock().unwrap();
-    JsValue::from_bool(cpu.is_sound_playing())
-}
+        display_buffer
+            .iter()
+            .enumerate()
+            .for_each(|(i, value)| js_buffer.set(i as u32, JsValue::from_bool(*value)));
 
-#[wasm_bindgen]
-pub fn set_key_down(key: u8) {
-    CPU.lock().unwrap().keypad.key_down(key);
-}
+        js_buffer
+    }
 
-#[wasm_bindgen]
-pub fn set_key_up(key: u8) {
-    CPU.lock().unwrap().keypad.key_up(key);
+    pub fn is_sound_playing(&mut self) -> JsValue {
+        JsValue::from_bool(self.cpu.is_sound_playing())
+    }
+
+    pub fn set_key_down(&mut self, key: u8) {
+        self.cpu.keypad.key_down(key);
+    }
+
+    pub fn set_key_up(&mut self, key: u8) {
+        self.cpu.keypad.key_up(key);
+    }
 }

@@ -1,4 +1,4 @@
-import init, * as cpu from "chip8-emulator-wasm";
+import init, * as emulator from "chip8-emulator-wasm";
 
 import { SoundPlayer } from "./sound";
 import { Keypad } from "./keypad";
@@ -6,13 +6,18 @@ import { Display } from "./display";
 import { RomSelector } from "./rom";
 
 class Emulator {
+  inner: emulator.Emulator;
   keypad: Keypad;
   display: Display;
   soundPlayer: SoundPlayer;
   romSelector: RomSelector;
 
   constructor() {
-    this.keypad = new Keypad();
+    this.inner = new emulator.Emulator();
+    this.keypad = new Keypad(
+      (key: number) => this.inner.set_key_down(key),
+      (key: number) => this.inner.set_key_up(key)
+    );
     this.display = new Display();
     this.soundPlayer = new SoundPlayer();
     this.romSelector = new RomSelector();
@@ -23,8 +28,8 @@ class Emulator {
   }
 
   startEmulator(rom: Uint8Array) {
-    cpu.reset();
-    cpu.load_rom(rom);
+    this.inner.reset();
+    this.inner.load_rom(rom);
 
     this.keypad.addListeners();
 
@@ -33,15 +38,15 @@ class Emulator {
 
   stopEmulator() {
     this.keypad.removeListeners();
-    cpu.reset();
+    this.inner.reset();
   }
 
   gameLoop() {
-    for (let i = 0; i < 10; i++) cpu.execute_instruction_cycle();
-    this.display.render(cpu.get_display_buffer());
-    cpu.decrement_timers();
+    for (let i = 0; i < 10; i++) this.inner.execute_instruction_cycle();
+    this.display.render(this.inner.get_display_buffer());
+    this.inner.decrement_timers();
 
-    if (cpu.is_sound_playing()) this.soundPlayer.playTone();
+    if (this.inner.is_sound_playing()) this.soundPlayer.playTone();
     else this.soundPlayer.stopTone();
 
     if (this.romSelector.romLoaded) window.requestAnimationFrame(this.gameLoop.bind(this));

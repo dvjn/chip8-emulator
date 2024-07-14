@@ -1,6 +1,7 @@
-import * as cpu from "chip8-emulator-wasm";
-
 export class Keypad {
+  onKeyDown: (key: number) => void;
+  onKeyUp: (key: number) => void;
+
   static keyMap = {
     1: 0x1,
     2: 0x2,
@@ -20,29 +21,32 @@ export class Keypad {
     v: 0xf,
   };
 
-  constructor() {}
+  constructor(onKeyDown, onKeyUp) {
+    this.onKeyDown = onKeyDown;
+    this.onKeyUp = onKeyUp;
+  }
 
   addListeners = () => {
-    document.addEventListener("keydown", Keypad.keyDownEventHandler);
-    document.addEventListener("keyup", Keypad.keyUpEventHandler);
+    document.addEventListener("keydown", this.keyDownEventHandler);
+    document.addEventListener("keyup", this.keyUpEventHandler);
   };
 
   removeListeners = () => {
-    document.removeEventListener("keydown", Keypad.keyDownEventHandler);
-    document.removeEventListener("keyup", Keypad.keyUpEventHandler);
+    document.removeEventListener("keydown", this.keyDownEventHandler);
+    document.removeEventListener("keyup", this.keyUpEventHandler);
   };
 
-  static keyDownEventHandler = (event: KeyboardEvent) => {
+  keyDownEventHandler = (event: KeyboardEvent) => {
     const key = Keypad.keyMap[event.key.toLowerCase()];
     if (key !== undefined) {
-      cpu.set_key_down(key);
+      this.onKeyDown(key);
     }
   };
 
-  static keyUpEventHandler = (event: KeyboardEvent) => {
+  keyUpEventHandler = (event: KeyboardEvent) => {
     const key = Keypad.keyMap[event.key.toLowerCase()];
     if (key !== undefined) {
-      cpu.set_key_up(key);
+      this.onKeyUp(key);
     }
   };
 }
