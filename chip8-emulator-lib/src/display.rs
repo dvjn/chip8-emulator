@@ -1,33 +1,33 @@
+pub const DISPLAY_WIDTH: usize = 64;
+pub const DISPLAY_HEIGHT: usize = 32;
+pub const DISPLAY_PIXELS: usize = DISPLAY_WIDTH * DISPLAY_HEIGHT;
+
 #[derive(Debug)]
 pub struct Display {
-    buffer: [bool; Display::PIXELS],
+    buffer: [bool; DISPLAY_PIXELS],
 }
 
 impl Display {
-    pub const WIDTH: usize = 64;
-    pub const HEIGHT: usize = 32;
-    pub const PIXELS: usize = Display::WIDTH * Display::HEIGHT;
-
     pub const fn new() -> Self {
         Self {
-            buffer: [false; Display::PIXELS],
+            buffer: [false; DISPLAY_PIXELS],
         }
     }
 
-    pub fn get_buffer(&self) -> &[bool; Display::PIXELS] {
+    pub fn get_buffer(&self) -> &[bool; DISPLAY_PIXELS] {
         &self.buffer
     }
 
     pub fn cls(&mut self) {
-        self.buffer = [false; Display::PIXELS];
+        self.buffer = [false; DISPLAY_PIXELS];
     }
 
     fn set_pixel(&mut self, x: usize, y: usize, pixel: bool) {
-        self.buffer[x + y * Display::WIDTH] = pixel;
+        self.buffer[x + y * DISPLAY_WIDTH] = pixel;
     }
 
     fn get_pixel(&self, x: usize, y: usize) -> bool {
-        self.buffer[x + y * Display::WIDTH]
+        self.buffer[x + y * DISPLAY_WIDTH]
     }
 
     fn xor_pixel(&mut self, x: usize, y: usize, value: bool) -> bool {
@@ -43,10 +43,10 @@ impl Display {
         let mut collision = false;
 
         let rows = (0..sprites.len())
-            .map(|row| (y + row).rem_euclid(Display::HEIGHT))
+            .map(|row| (y + row).rem_euclid(DISPLAY_HEIGHT))
             .collect::<Vec<usize>>();
         let cols = (0..8)
-            .map(|col| (x + col).rem_euclid(Display::WIDTH))
+            .map(|col| (x + col).rem_euclid(DISPLAY_WIDTH))
             .collect::<Vec<usize>>();
 
         for (j, &y) in rows.iter().enumerate() {
@@ -97,46 +97,46 @@ mod tests {
         assert!(display.buffer[2]);
         assert!(display.buffer[3]);
 
-        assert!(display.buffer[Display::WIDTH]);
-        assert!(display.buffer[3 + Display::WIDTH]);
+        assert!(display.buffer[DISPLAY_WIDTH]);
+        assert!(display.buffer[3 + DISPLAY_WIDTH]);
 
-        assert!(display.buffer[Display::WIDTH * 2]);
-        assert!(display.buffer[3 + Display::WIDTH * 2]);
+        assert!(display.buffer[DISPLAY_WIDTH * 2]);
+        assert!(display.buffer[3 + DISPLAY_WIDTH * 2]);
 
-        assert!(display.buffer[Display::WIDTH * 3]);
-        assert!(display.buffer[3 + Display::WIDTH * 3]);
+        assert!(display.buffer[DISPLAY_WIDTH * 3]);
+        assert!(display.buffer[3 + DISPLAY_WIDTH * 3]);
 
-        assert!(display.buffer[Display::WIDTH * 4]);
-        assert!(display.buffer[1 + Display::WIDTH * 4]);
-        assert!(display.buffer[2 + Display::WIDTH * 4]);
-        assert!(display.buffer[3 + Display::WIDTH * 4]);
+        assert!(display.buffer[DISPLAY_WIDTH * 4]);
+        assert!(display.buffer[1 + DISPLAY_WIDTH * 4]);
+        assert!(display.buffer[2 + DISPLAY_WIDTH * 4]);
+        assert!(display.buffer[3 + DISPLAY_WIDTH * 4]);
     }
 
     #[test]
     fn display_digit_0_wrapped() {
         let mut display = Display::new();
 
-        let collision = display.draw(Display::WIDTH - 2, Display::HEIGHT - 2, &FONT_SPRITES[0..5]);
+        let collision = display.draw(DISPLAY_WIDTH - 2, DISPLAY_HEIGHT - 2, &FONT_SPRITES[0..5]);
 
         assert!(!collision);
 
-        assert!(display.buffer[Display::WIDTH - 2 + Display::WIDTH * (Display::HEIGHT - 2)]);
-        assert!(display.buffer[Display::WIDTH - 1 + Display::WIDTH * (Display::HEIGHT - 2)]);
-        assert!(display.buffer[Display::WIDTH * (Display::HEIGHT - 2)]);
-        assert!(display.buffer[1 + Display::WIDTH * (Display::HEIGHT - 2)]);
+        assert!(display.buffer[DISPLAY_WIDTH - 2 + DISPLAY_WIDTH * (DISPLAY_HEIGHT - 2)]);
+        assert!(display.buffer[DISPLAY_WIDTH - 1 + DISPLAY_WIDTH * (DISPLAY_HEIGHT - 2)]);
+        assert!(display.buffer[DISPLAY_WIDTH * (DISPLAY_HEIGHT - 2)]);
+        assert!(display.buffer[1 + DISPLAY_WIDTH * (DISPLAY_HEIGHT - 2)]);
 
-        assert!(display.buffer[Display::WIDTH - 2 + Display::WIDTH * (Display::HEIGHT - 1)]);
-        assert!(display.buffer[1 + Display::WIDTH * (Display::HEIGHT - 1)]);
+        assert!(display.buffer[DISPLAY_WIDTH - 2 + DISPLAY_WIDTH * (DISPLAY_HEIGHT - 1)]);
+        assert!(display.buffer[1 + DISPLAY_WIDTH * (DISPLAY_HEIGHT - 1)]);
 
-        assert!(display.buffer[Display::WIDTH - 2]);
+        assert!(display.buffer[DISPLAY_WIDTH - 2]);
         assert!(display.buffer[1]);
 
-        assert!(display.buffer[Display::WIDTH - 2 + Display::WIDTH]);
-        assert!(display.buffer[1 + Display::WIDTH]);
+        assert!(display.buffer[DISPLAY_WIDTH - 2 + DISPLAY_WIDTH]);
+        assert!(display.buffer[1 + DISPLAY_WIDTH]);
 
-        assert!(display.buffer[Display::WIDTH - 2 + Display::WIDTH * 2]);
-        assert!(display.buffer[Display::WIDTH - 1 + Display::WIDTH * 2]);
-        assert!(display.buffer[Display::WIDTH * 2]);
-        assert!(display.buffer[1 + Display::WIDTH * 2]);
+        assert!(display.buffer[DISPLAY_WIDTH - 2 + DISPLAY_WIDTH * 2]);
+        assert!(display.buffer[DISPLAY_WIDTH - 1 + DISPLAY_WIDTH * 2]);
+        assert!(display.buffer[DISPLAY_WIDTH * 2]);
+        assert!(display.buffer[1 + DISPLAY_WIDTH * 2]);
     }
 }

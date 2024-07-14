@@ -6,32 +6,37 @@ use crate::{
     keypad::Keypad,
 };
 
+const MEMORY_SIZE: usize = 0x1000; // 4kb
+const STACK_SIZE: usize = 0x10; // 16
+
 #[derive(Debug)]
 pub struct Cpu {
-    memory: [u8; 4096],
+    memory: [u8; MEMORY_SIZE],
     v_registers: [u8; 16],
     i_register: u16,
     delay_timer: u8,
     sound_timer: u8,
     program_counter: u16,
     stack_pointer: u8,
-    stack: [u16; 16],
+    stack: [u16; STACK_SIZE],
 
     pub display: Display,
     pub keypad: Keypad,
 }
 
 impl Cpu {
+    pub const MEMORY_SIZE: usize = 0x1000; // 4kb
+
     pub const fn new() -> Cpu {
         Cpu {
-            memory: [0; 4096],
+            memory: [0; MEMORY_SIZE],
             v_registers: [0; 16],
             i_register: 0,
             delay_timer: 0,
             sound_timer: 0,
             program_counter: 0,
             stack_pointer: 0,
-            stack: [0; 16],
+            stack: [0; STACK_SIZE],
 
             display: Display::new(),
             keypad: Keypad::new(),
@@ -39,13 +44,13 @@ impl Cpu {
     }
 
     pub fn reset(&mut self) {
-        self.memory = [0; 4096];
+        self.memory = [0; MEMORY_SIZE];
         self.v_registers = [0; 16];
         self.i_register = 0;
         self.delay_timer = 0;
         self.sound_timer = 0;
         self.stack_pointer = 0;
-        self.stack = [0; 16];
+        self.stack = [0; STACK_SIZE];
 
         self.memory[0..80].copy_from_slice(&FONT_SPRITES);
         self.program_counter = 0x200;
@@ -334,7 +339,7 @@ impl Cpu {
 
 #[cfg(test)]
 mod tests {
-    use crate::{display::Display, instruction::Instruction};
+    use crate::{display::DISPLAY_WIDTH, instruction::Instruction};
 
     use super::Cpu;
 
@@ -896,18 +901,18 @@ mod tests {
         assert!(display_buffer[2]);
         assert!(display_buffer[3]);
 
-        assert!(display_buffer[Display::WIDTH]);
-        assert!(display_buffer[3 + Display::WIDTH]);
+        assert!(display_buffer[DISPLAY_WIDTH]);
+        assert!(display_buffer[3 + DISPLAY_WIDTH]);
 
-        assert!(display_buffer[Display::WIDTH * 2]);
-        assert!(display_buffer[3 + Display::WIDTH * 2]);
+        assert!(display_buffer[DISPLAY_WIDTH * 2]);
+        assert!(display_buffer[3 + DISPLAY_WIDTH * 2]);
 
-        assert!(display_buffer[Display::WIDTH * 3]);
-        assert!(display_buffer[3 + Display::WIDTH * 3]);
+        assert!(display_buffer[DISPLAY_WIDTH * 3]);
+        assert!(display_buffer[3 + DISPLAY_WIDTH * 3]);
 
-        assert!(display_buffer[Display::WIDTH * 4]);
-        assert!(display_buffer[1 + Display::WIDTH * 4]);
-        assert!(display_buffer[2 + Display::WIDTH * 4]);
-        assert!(display_buffer[3 + Display::WIDTH * 4]);
+        assert!(display_buffer[DISPLAY_WIDTH * 4]);
+        assert!(display_buffer[1 + DISPLAY_WIDTH * 4]);
+        assert!(display_buffer[2 + DISPLAY_WIDTH * 4]);
+        assert!(display_buffer[3 + DISPLAY_WIDTH * 4]);
     }
 }
