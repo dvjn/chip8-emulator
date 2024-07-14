@@ -2,7 +2,7 @@
 
 mod utils;
 
-use chip8_emulator_lib::cpu::Cpu;
+use chip8_emulator::cpu::Cpu;
 use js_sys::Array;
 use utils::set_panic_hook;
 use wasm_bindgen::prelude::*;
