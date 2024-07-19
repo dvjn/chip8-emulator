@@ -2,7 +2,7 @@ name: Build and Upload Package
 
 on:
   push:
-    branches: ["main", "desktop-app"]
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
