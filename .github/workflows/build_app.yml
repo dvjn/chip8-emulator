@@ -1,0 +1,38 @@
+name: Build and Upload Package
+
+on:
+  push:
+    branches: ["main", "desktop-app"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+concurrency:
+  group: "linux-app"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Build
+        working-directory: ./desktop
+        run: |
+          cargo build --release
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: chip8-emulator-linux
+          path: ./desktop/target/release/chip8-emulator-desktop
