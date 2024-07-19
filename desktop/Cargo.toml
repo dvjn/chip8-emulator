@@ -1,0 +1,8 @@
+[package]
+name = "chip8-emulator-desktop"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+chip8-emulator = { path = "../chip8-emulator" }
+sdl2 = { version = "0.37.0", features = ["bundled"] }
