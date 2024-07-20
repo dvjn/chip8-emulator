@@ -1,8 +1,6 @@
-# chip-8 emulator
+# Chip-8 Emulator
 
-[chip-8](https://en.wikipedia.org/wiki/CHIP-8) emulator written in rust.
-compiled to webassembly, and uses typescript typescript for web.
-uses sdl2 in rust for desktop app.
+A [Chip-8](https://en.wikipedia.org/wiki/CHIP-8) emulator written in Rust. Uses webassembly and typescript for web. Uses sdl2 for desktop app.
 
 ## Games
 
