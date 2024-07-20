@@ -2,6 +2,7 @@
 pub struct Instruction(pub u8, pub u8, pub u8, pub u8);
 
 impl Instruction {
+    #[cfg(test)]
     pub fn from_opcode(opcode: u16) -> Self {
         Self(
             ((opcode & 0xF000) >> 12) as u8,

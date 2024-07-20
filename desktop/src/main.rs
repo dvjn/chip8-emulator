@@ -2,7 +2,7 @@ mod audio;
 mod display;
 
 use audio::AudioDevice;
-use chip8_emulator::cpu::Cpu;
+use chip8_emulator::Emulator;
 use display::DisplayDevice;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
@@ -52,9 +52,9 @@ fn main() {
     let rom_file_path = get_rom_file_path();
     let rom = fs::read(rom_file_path).expect("open rom file");
 
-    let mut cpu = Cpu::new();
-    cpu.reset();
-    cpu.load_rom(&rom);
+    let mut emulator = Emulator::new();
+    emulator.reset();
+    emulator.load_rom(&rom);
 
     let sdl_context = sdl2::init().expect("sdl2 init");
 
@@ -76,7 +76,7 @@ fn main() {
                     ..
                 } => {
                     if let Some(key) = map_keycode(keycode) {
-                        cpu.keypad.key_down(key);
+                        emulator.keypad.key_down(key);
                     }
                 }
                 Event::KeyUp {
@@ -84,7 +84,7 @@ fn main() {
                     ..
                 } => {
                     if let Some(key) = map_keycode(keycode) {
-                        cpu.keypad.key_up(key);
+                        emulator.keypad.key_up(key);
                     }
                 }
                 _ => {}
@@ -92,13 +92,13 @@ fn main() {
         }
 
         for _ in 0..10 {
-            cpu.execute_instruction_cycle();
+            emulator.execute_instruction_cycle();
         }
-        cpu.decrement_timers();
+        emulator.decrement_timers();
 
-        display_device.render(cpu.display.get_buffer());
+        display_device.render(emulator.display.get_buffer());
 
-        if cpu.is_sound_playing() {
+        if emulator.is_sound_playing() {
             audio_device.play();
         } else {
             audio_device.pause();
