@@ -5,4 +5,6 @@ edition = "2021"
 
 [dependencies]
 chip8-emulator = { path = "../chip8-emulator" }
-sdl2 = { version = "0.37.0", features = ["bundled"] }
+winit = "0.30"
+softbuffer = "0.4"
+cpal = "0.15"

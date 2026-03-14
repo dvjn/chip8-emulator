@@ -1,59 +1,69 @@
+use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
+use cpal::{Stream, StreamConfig};
 use std::f32::consts::PI;
-
-use sdl2::{
-    audio::{AudioCallback, AudioSpecDesired, AudioStatus},
-    Sdl,
-};
-
-struct SineWave {
-    pub phase_inc: f32,
-    pub phase: f32,
-    pub volume: f32,
-}
-
-impl AudioCallback for SineWave {
-    type Channel = f32;
-
-    fn callback(&mut self, out: &mut [f32]) {
-        for x in out.iter_mut() {
-            *x = self.volume * (2.0 * PI * self.phase).sin();
-            self.phase = (self.phase + self.phase_inc) % 1.0;
-        }
-    }
-}
+use std::sync::{Arc, Mutex};
 
 pub struct AudioDevice {
-    device: sdl2::audio::AudioDevice<SineWave>,
+    _stream: Stream,
+    playing: Arc<Mutex<bool>>,
 }
 
 impl AudioDevice {
-    pub fn new(sdl_context: &Sdl) -> Self {
-        let audio_subsystem = sdl_context.audio().expect("audio subsystem for sdl2");
-        let desired_spec = AudioSpecDesired {
-            freq: Some(44100),
-            channels: Some(1),
-            samples: None,
-        };
-        let device = audio_subsystem
-            .open_playback(None, &desired_spec, |spec| SineWave {
-                phase_inc: 440.0 / spec.freq as f32,
-                phase: 0.0,
-                volume: 0.25,
-            })
-            .expect("audio device");
+    pub fn new() -> Self {
+        let host = cpal::default_host();
+        let device = host
+            .default_output_device()
+            .expect("no output audio device");
+        let config = device
+            .default_output_config()
+            .expect("default output config");
+        let sample_rate = config.sample_rate().0 as f32;
+        let channels = config.channels() as usize;
 
-        Self { device }
+        let playing = Arc::new(Mutex::new(false));
+        let playing_clone = playing.clone();
+
+        let mut phase: f32 = 0.0;
+        let phase_inc = 440.0 / sample_rate;
+
+        let stream_config: StreamConfig = config.into();
+        let stream = device
+            .build_output_stream(
+                &stream_config,
+                move |data: &mut [f32], _| {
+                    let is_playing = *playing_clone.lock().unwrap();
+                    for frame in data.chunks_mut(channels) {
+                        let sample = if is_playing {
+                            0.25 * (2.0 * PI * phase).sin()
+                        } else {
+                            0.0
+                        };
+                        if is_playing {
+                            phase = (phase + phase_inc) % 1.0;
+                        }
+                        for s in frame.iter_mut() {
+                            *s = sample;
+                        }
+                    }
+                },
+                |err| eprintln!("audio stream error: {err}"),
+                None,
+            )
+            .expect("build output stream");
+
+        stream.play().expect("start audio stream");
+
+        Self {
+            _stream: stream,
+            playing,
+        }
     }
 
     pub fn play(&mut self) {
-        if self.device.status() != AudioStatus::Playing {
-            self.device.resume();
-        }
+        *self.playing.lock().unwrap() = true;
     }
 
     pub fn pause(&mut self) {
-        if self.device.status() == AudioStatus::Playing {
-            self.device.pause();
-        }
+        *self.playing.lock().unwrap() = false;
     }
 }
